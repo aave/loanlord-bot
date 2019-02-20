@@ -1,0 +1,28 @@
+{
+  "name": "loanlord-bot",
+  "version": "1.0.0",
+  "description": "The loanlord bot is a telegram bot capable of reading data from theETHLend platform and share with the users details about loan requests and offers",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "loan",
+    "crypto",
+    "ethlend",
+    "aave",
+    "marketplace",
+    "ethereum",
+    "bitcoin"
+  ],
+  "author": "Emilio Frangella",
+  "license": "ISC",
+  "dependencies": {
+    "aave-js": "^1.0.4",
+    "node-telegram-bot-api": "^0.30.0",
+    "typescript": "^3.3.3"
+  },
+  "devDependencies": {
+    "@types/node-telegram-bot-api": "^0.30.4"
+  }
+}
