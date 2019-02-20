@@ -3,7 +3,7 @@ import {Marketplace} from 'aave-js';
 import { LoanRequestModel } from 'aave-js/dist/types/types';
 
 
-const token = '';
+const token = '667101294:AAEoXmSqMJV11CROGXs8f7fDg_keo3HFQ0k';
 
 const bot = new TelegramBot(token, {polling: true});
 
@@ -11,11 +11,11 @@ const marketplace = new Marketplace('');
 
 const formatLoanData = (data : LoanRequestModel) => {
 
-    let message = `<b>Loan request address</b> \n ${data.loanAddress} \n \n`;
-    message +=`<b>collateral:</b> ${data.collateralAmount} ${data.collateralType} \n`;
-    message +=`<b>loan amount:</b> ${data.loanAmount} ${data.moe} \n`;
-    message +=`<b>Monthly interest:</b> ${data.mpr}% \n`;
-    message +=`<b>Duration:</b> ${data.duration} days \n \n \n`;
+    let message = `Loan request address: \n <b>${data.loanAddress}</b> \n \n`;
+    message +=`collateral:<b> ${data.collateralAmount} ${data.collateralType} </b> \n`;
+    message +=`loan amount:<b> ${data.loanAmount} ${data.moe} </b> \n`;
+    message +=`Monthly interest: <b>${data.mpr}%</b> \n`;
+    message +=`Duration: <b>${data.duration} days</b> \n \n \n`;
 
     message +=`<b>Fund this request and earn interest on </b> <a href="ethlend.io">https://ethlend.io</a> \n \n \n`;
 
