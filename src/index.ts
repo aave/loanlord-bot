@@ -3,7 +3,7 @@ import {Marketplace} from 'aave-js';
 import { LoanRequestModel } from 'aave-js/dist/types/types';
 
 
-const token = '667101294:AAEoXmSqMJV11CROGXs8f7fDg_keo3HFQ0k';
+const token = '';
 
 const bot = new TelegramBot(token, {polling: true});
 
