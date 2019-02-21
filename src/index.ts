@@ -5,7 +5,7 @@ import lowdb from 'lowdb';
 import FileAsync from 'lowdb/adapters/FileAsync';
 
 
-const token = '';
+const token = '667101294:AAEoXmSqMJV11CROGXs8f7fDg_keo3HFQ0k';
 
 const bot = new TelegramBot(token, { polling: true });
 
@@ -20,12 +20,23 @@ const formatLoanData = (data: LoanRequestModel) => {
   message += `collateral:<b> ${data.collateralAmount} ${data.collateralType} </b> \n`;
   message += `loan amount:<b> ${data.loanAmount} ${data.moe} </b> \n`;
   message += `Monthly interest: <b>${data.mpr}%</b> \n`;
-  message += `Duration: <b>${data.duration} days</b> \n \n \n`;
+  message += `Duration: <b>${data.duration*30} days</b> \n \n \n`;
 
   message += `<b>Fund this request and earn interest on </b> <a href="ethlend.io">https://ethlend.io</a> \n \n \n`;
 
   return message;
 }
+
+bot.onText(/\/whoisthelord/, (msg: any, match: any) => {
+ 
+  let message = "I'm the lords of the loans, built with the AAVE SDK, and i rule over the ETHLend world. \n";
+  message += "If you want to become my subject, write to me in private and type <b>/register</b>. You shall receive notifications when i consider it appropriate.";
+  message += " Type <b>/requests</b> if you want to know which loans are available on the platform to fund.";
+  message += "I shall acquire more power as the AAVE SDK grows.";
+
+  bot.sendMessage(msg.chat.id, message, { parse_mode: "HTML" });
+
+});
 
 bot.onText(/\/register/, async (msg: any, match: any) => {
 
@@ -81,6 +92,9 @@ bot.onText(/\/requests/, async (msg: any, match: any) => {
 
     const allRequestsAddresses = await marketplace.requests.getAllAddresses();
 
+    let loansFound = 0;
+
+
     for (let address of allRequestsAddresses.reverse()) {
 
       let loanData = await marketplace.requests.getLoanData(address);
@@ -89,9 +103,14 @@ bot.onText(/\/requests/, async (msg: any, match: any) => {
 
         let message = formatLoanData(loanData);
         bot.sendMessage(chatId, message, { parse_mode: "HTML" });
+        loansFound++;
       }
 
 
+    }
+
+    if(loansFound == 0){
+       bot.sendMessage(chatId, "All loans are funded right now.");
     }
 
   } catch (e) {
