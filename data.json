@@ -1,18 +1,4 @@
 {
-  "registrations": [
-    {
-      "chatId": -383368679
-    },
-    {
-      "chatId": 2279884
-    },
-    {
-      "chatId": 481853138
-    }
-  ],
-  "broadcasting": [
-    {
-      "chatId": 481853138
-    }
-  ]
+  "registrations": [],
+  "broadcasting": []
 }
