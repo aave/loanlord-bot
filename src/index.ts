@@ -5,11 +5,11 @@ import lowdb from 'lowdb';
 import FileAsync from 'lowdb/adapters/FileAsync';
 
 
-const token = '667101294:AAEoXmSqMJV11CROGXs8f7fDg_keo3HFQ0k';
+const token = '';
 
 const bot = new TelegramBot(token, { polling: true });
 
-const marketplace = new Marketplace('');
+const marketplace = new Marketplace('','https://api.aave.com');
 
 let latestLoansList : string[] | null = null;
 
@@ -156,4 +156,4 @@ setInterval(async () => {
   }
 
 
-}, 6000);
+}, 120000);
