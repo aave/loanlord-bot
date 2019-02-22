@@ -19,6 +19,7 @@
   "license": "ISC",
   "dependencies": {
     "aave-js": "^1.0.4",
+    "bignumber.js": "^8.0.2",
     "lowdb": "^1.0.0",
     "node-telegram-bot-api": "^0.30.0",
     "typescript": "^3.3.3"

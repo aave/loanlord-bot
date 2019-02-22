@@ -3,6 +3,7 @@ import { Marketplace } from 'aave-js';
 import { LoanRequestModel } from 'aave-js/dist/types/types';
 import lowdb from 'lowdb';
 import FileAsync from 'lowdb/adapters/FileAsync';
+import { calculateTotalPremium } from './helpers/calculationHelpers';
 
 
 const token = '';
@@ -16,13 +17,14 @@ let latestLoansList: string[] | null = null;
 
 const formatLoanData = (data: LoanRequestModel) => {
 
-  let message = `Loan request address: \n <b>${data.loanAddress}</b> \n \n`;
-  message += `collateral:<b> ${data.collateralAmount} ${data.collateralType} </b> \n`;
-  message += `loan amount:<b> ${data.loanAmount} ${data.moe} </b> \n`;
+  let totalPremium = calculateTotalPremium(data);
+ 
+  let message = `<b>----- LOAN REQUEST ------</b> \n\n Address: \n <b>${data.loanAddress}</b> \n`;
+  message += `Collateral:<b> ${data.collateralAmount} ${data.collateralType} </b> \n`;
+  message += `Loan amount:<b> ${data.loanAmount} ${data.moe} </b> \n`;
   message += `Monthly interest: <b>${data.mpr}%</b> \n`;
-  message += `Duration: <b>${data.duration * 30} days</b> \n \n \n`;
-
-  message += `<b>Fund this request and earn interest on </b> <a href="ethlend.io">https://ethlend.io</a> \n \n \n`;
+  message += `Duration: <b>${data.duration * 30} days</b> \n`;
+  message += totalPremium ? `<b>POTENTIAL EARNINGS: ${totalPremium.multipliedBy(0.9).toString()} ${data.moe}</b>  \n \n `: "";
 
   return message;
 }
@@ -65,7 +67,7 @@ bot.onText(/\/register/, async (msg: any, match: any) => {
   const db = await lowdb(adapter);
 
   if (db.get("registrations").find(item => item.chatId === chatId).value()) {
-    bot.sendMessage(msg.chat.id, "You already registered with the lord of the loans.");
+    bot.sendMessage(msg.chat.id, "This channel is already registered to receive loan notifications. If you want to receive personal notification, send the /register command in private.");
     return;
   }
 
@@ -159,9 +161,15 @@ bot.onText(/\/requests/, async (msg: any, match: any) => {
       return;
     }
 
+    let msg: string = "";
+
     for (let loan of loans) {
-      bot.sendMessage(chatId, formatLoanData(loan), { parse_mode: "HTML" });
+      msg += formatLoanData(loan);
     }
+
+    msg += `\n \n <b>Fund these requests and earn interest on </b> <a href="ethlend.io">https://ethlend.io</a> \n \n \n`;
+
+    bot.sendMessage(chatId, msg, { parse_mode: "HTML" });
 
   } catch (e) {
     console.log(e);
@@ -186,12 +194,12 @@ setInterval(async () => {
 
   if (currentList.length > latestLoansList.length) {
 
-    let difference = currentList.filter(address => latestLoansList && !latestLoansList.includes(address));
+    let difference = currentList.filter((address: string) => latestLoansList && !latestLoansList.includes(address));
 
     for (let address of difference) {
 
       let loanData = await marketplace.requests.getLoanData(address);
-      let message = "<b>NEW LOAN REQUEST</b> \n \n" + formatLoanData(loanData);
+      let message = "<b>NEW LOAN REQUEST</b> \n \n" + formatLoanData(loanData) + '<b>Fund this request and earn interest on </b> <a href="ethlend.io">https://ethlend.io</a> \n \n \n';
 
       db.get("registrations").value().forEach((item: any) => {
 
@@ -221,22 +229,28 @@ setInterval(async () => {
 
   let loans = await fetchAvailableLoans();
 
+  if(loans.length === 0) return;
 
   db.get("broadcasting").value().forEach((item: any) => {
 
-    bot.sendMessage(item.chatId, "<b>AVAILABLE LOAN REQUESTS</b>", { parse_mode: "HTML" });
+    let msg = '<b>AVAILABLE LOAN REQUESTS</b> \n\n\n\n';
 
     for (let loan of loans) {
-      try {
-        bot.sendMessage(item.chatId, formatLoanData(loan), { parse_mode: "HTML" });
-      }
-      catch (e) {
-        console.log("Exception while sending message to chat ", item.chatId, ", reason: ", e);
-      }
+      msg += formatLoanData(loan);
     }
+
+    msg += `\n \n <b>Fund these requests and earn interest on </b> <a href="ethlend.io">https://ethlend.io</a> \n \n \n`;
+
+    try {
+      bot.sendMessage(item.chatId, msg, { parse_mode: "HTML" });
+    }
+    catch (e) {
+      console.log("Exception while sending message to chat ", item.chatId, ", reason: ", e);
+    }
+
 
   });
 
 
-}, 1200000);
+}, 6000);
 

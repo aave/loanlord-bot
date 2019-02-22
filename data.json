@@ -1,4 +1,15 @@
 {
-  "registrations": [],
-  "broadcasting": []
+  "registrations": [
+    {
+      "chatId": -383368679
+    },
+    {
+      "chatId": 481853138
+    }
+  ],
+  "broadcasting": [
+    {
+      "chatId": 481853138
+    }
+  ]
 }
