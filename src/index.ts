@@ -4,7 +4,7 @@ import { LoanRequestModel } from 'aave-js/dist/types/types';
 import lowdb from 'lowdb';
 import FileAsync from 'lowdb/adapters/FileAsync';
 import { calculateTotalPremium } from './helpers/calculationHelpers';
-
+import BigNumber from 'bignumber.js'
 
 const token = '';
 
@@ -17,14 +17,16 @@ let latestLoansList: string[] | null = null;
 
 const formatLoanData = (data: LoanRequestModel) => {
 
-  let totalPremium = calculateTotalPremium(data);
+  const totalPremium = calculateTotalPremium(data);
  
+  const apr = totalPremium ? totalPremium.dividedBy(data.loanAmount).multipliedBy(100).toFixed(2) : 0;
+
   let message = `<b>----- LOAN REQUEST ------</b> \n\n Address: \n <b>${data.loanAddress}</b> \n`;
   message += `Collateral:<b> ${data.collateralAmount} ${data.collateralType} </b> \n`;
   message += `Loan amount:<b> ${data.loanAmount} ${data.moe} </b> \n`;
-  message += `Monthly interest: <b>${data.mpr}%</b> \n`;
+  message += `APR: <b>${apr}%</b> \n`;
   message += `Duration: <b>${data.duration * 30} days</b> \n`;
-  message += totalPremium ? `<b>POTENTIAL EARNINGS: ${totalPremium.multipliedBy(0.9).toString()} ${data.moe}</b>  \n \n `: "";
+  message += totalPremium ? `<b>POTENTIAL EARNINGS: ${totalPremium.toString()} ${data.moe}</b>  \n \n `: "";
 
   return message;
 }
@@ -252,5 +254,5 @@ setInterval(async () => {
   });
 
 
-}, 6000);
+}, 7200000);
 
